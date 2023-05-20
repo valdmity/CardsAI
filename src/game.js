@@ -1,22 +1,51 @@
 'use strict';
 
+const HOST = 'http://127.0.0.1:8000'
+
+var cardList = document.querySelectorAll('.card');
 const container = document.querySelector('.board');
-const cardList = document.querySelectorAll('.card');
+const cardsDiv = document.getElementById('cards');
 
-const initCards = () => {
-    const newCards = document.querySelectorAll('.card:not(.removed)');
+var cardsStorage = [
+    {
+        "photo_url": "",
+        "name": "Stub",
+        "description": "Description",
+    }
+]; // array of card objects
 
-    newCards.forEach((card, index) => {
-        card.style.zIndex = cardList.length - index;
-        card.style.transform = `scale(${(20 - index) / 20}) translateY(${-30 * index}px)`;
-    });
-
-    container.classList.add('loaded');
+const loadCards = () => {
+    return fetch(`${HOST}/api/cards`).then(res => res.json());
 }
 
-initCards();
+const renderCards = () => {
+    cardsDiv.innerHTML = '';
 
-cardList.forEach(el => {
+    cardsStorage.map((card, index) => {
+        const cardHtml = document.createElement('div');
+        cardHtml.className = 'card';
+        const img = document.createElement('img');
+        img.src = card.photo_url;
+        cardHtml.appendChild(img);
+
+        const header = document.createElement('h3');
+        header.innerText = card.name;
+        cardHtml.appendChild(header);
+
+        const description = document.createElement('p');
+        description.innerText = card.name;
+        cardHtml.appendChild(description);
+
+        cardHtml.style.zIndex = cardList.length - index;
+        cardHtml.style.transform = `scale(${(20 - index) / 20}) translateY(${-30 * index}px)`;
+
+        makeCardSwipable(cardHtml); // TODO rename
+        cardsDiv.appendChild(cardHtml);
+    });
+    cardList = document.querySelectorAll('.card');
+}
+
+const makeCardSwipable = (el) => {
     const hammer = new Hammer(el);
 
     hammer.on('pan', event => el.classList.add('moving'));
@@ -60,7 +89,11 @@ cardList.forEach(el => {
         const rotate = xMulti * yMulti;
 
         event.target.style.transform = `translate(${toX}px, ${(toY + event.deltaY)}px) rotate(${rotate}deg)`;
-        initCards();
     });
-});
+}
+
+loadCards().then(r => { cardsStorage = r; }).then(_ => renderCards()); // TODO перенести на событийную модель
+renderCards(); // рендерим заглушки
+container.classList.add('loaded');
+
 
