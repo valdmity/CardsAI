@@ -2,9 +2,14 @@
 
 const HOST = 'http://127.0.0.1:8000'
 
-var cardList = document.querySelectorAll('.card');
-const container = document.querySelector('.board');
+const board = document.querySelector('.board');
 const cardsDiv = document.getElementById('cards');
+var activeCard = {
+    "photo_url": "",
+    "name": "Active",
+    "description": "Active cards, rendered independetly",
+};
+var activeCardElement = undefined;
 
 var cardsStorage = [
     {
@@ -14,35 +19,42 @@ var cardsStorage = [
     }
 ]; // array of card objects
 
-const loadCards = () => {
-    return fetch(`${HOST}/api/cards`).then(res => res.json());
+const renderCard = (card, stackIndex) => {
+    const cardHtml = document.createElement('div');
+    cardHtml.className = 'card';
+    const img = document.createElement('img');
+    img.src = card.photo_url;
+    cardHtml.appendChild(img);
+
+    const header = document.createElement('h3');
+    header.innerText = card.name;
+    cardHtml.appendChild(header);
+
+    const description = document.createElement('p');
+    description.innerText = card.name;
+    cardHtml.appendChild(description);
+
+    cardHtml.style.zIndex = cardsStorage.length - stackIndex;
+    cardHtml.style.transform = `scale(${(20 - stackIndex) / 20}) translateY(${-30 * stackIndex}px)`;
+
+    makeCardSwipable(cardHtml);
+    cardsDiv.appendChild(cardHtml);
+
+    return cardHtml;
 }
 
-const renderCards = () => {
+const renderAllCards = () => {
     cardsDiv.innerHTML = '';
 
-    cardsStorage.map((card, index) => {
-        const cardHtml = document.createElement('div');
-        cardHtml.className = 'card';
-        const img = document.createElement('img');
-        img.src = card.photo_url;
-        cardHtml.appendChild(img);
+    if (!activeCard) {
+        console.warn('Cards are over.');
+        return;
+    }
 
-        const header = document.createElement('h3');
-        header.innerText = card.name;
-        cardHtml.appendChild(header);
+    // Мб починить ререндерин, чтоыб картинка по-новой не подгружалась, а карточка просто скейлилась
+    renderCard(activeCard, 0);
 
-        const description = document.createElement('p');
-        description.innerText = card.name;
-        cardHtml.appendChild(description);
-
-        cardHtml.style.zIndex = cardList.length - index;
-        cardHtml.style.transform = `scale(${(20 - index) / 20}) translateY(${-30 * index}px)`;
-
-        makeCardSwipable(cardHtml); // TODO rename
-        cardsDiv.appendChild(cardHtml);
-    });
-    cardList = document.querySelectorAll('.card');
+    cardsStorage.map((card, index) => renderCard(card, index));
 }
 
 const makeCardSwipable = (el) => {
@@ -71,9 +83,9 @@ const makeCardSwipable = (el) => {
         const isKeep = Math.abs(event.deltaX) < 80 || Math.abs(event.velocityX) < 0.5;
 
         event.target.classList.toggle('removed', !isKeep);
-
         if (isKeep) {
             event.target.style.transform = '';
+            // держали карточку, но она вернулась в исходную позицию
             return;
         }
 
@@ -89,11 +101,28 @@ const makeCardSwipable = (el) => {
         const rotate = xMulti * yMulti;
 
         event.target.style.transform = `translate(${toX}px, ${(toY + event.deltaY)}px) rotate(${rotate}deg)`;
+
+        if (event.deltaX > 0) {
+            console.log('Right swipe');
+        } else {
+            console.log('Left swipe');
+        }
+
+        activeCard = cardsStorage.shift();
+        renderAllCards();
     });
 }
 
-loadCards().then(r => { cardsStorage = r; }).then(_ => renderCards()); // TODO перенести на событийную модель
-renderCards(); // рендерим заглушки
-container.classList.add('loaded');
+
+const fetchCards = () => {
+    return fetch(`${HOST}/api/cards`).then(res => res.json());
+}
+
+fetchCards().then(cards => {
+    cardsStorage = cards;
+}).then(_ => renderAllCards()); // TODO перенести на событийную модель
+
+renderAllCards(); // рендерим заглушки
+board.classList.add('loaded');
 
 
