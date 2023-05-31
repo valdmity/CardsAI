@@ -5,22 +5,22 @@ const HOST = 'http://127.0.0.1:8000'
 const board = document.querySelector('.board');
 const cardsDiv = document.getElementById('cards');
 var activeCard = {
-    "photo_url": "",
-    "name": "Active",
-    "description": "Active cards, rendered independetly",
+    "photo_url": "https://clck.ru/34ZeDi",
+    "name": "Влад А4",
+    "description": "Погнали пить пиво??",
 };
 var activeCardElement = undefined;
 
 var cardsStorage = [
     {
-        "photo_url": "",
-        "name": "Stub",
-        "description": "Description",
+        "photo_url": "https://clck.ru/34ZeFQ",
+        "name": "Технарь",
+        "description": "Жи есть?",
     }
 ]; // array of card objects
 
 const renderCard = (card, stackIndex) => {
-    const cardHtml = document.createElement('div');
+    /*const cardHtml = document.createElement('div');
     cardHtml.className = 'card';
     const img = document.createElement('img');
     img.src = card.photo_url;
@@ -36,7 +36,16 @@ const renderCard = (card, stackIndex) => {
 
     cardHtml.style.zIndex = cardsStorage.length - stackIndex;
     cardHtml.style.transform = `scale(${(20 - stackIndex) / 20}) translateY(${-30 * stackIndex}px)`;
+    */
+    const cardHtml = document.querySelector('#cardTemplate').content.cloneNode(true).querySelector(".card");
 
+    const img = document.createElement('img');
+    img.src = card.photo_url;
+    cardHtml.appendChild(img);
+
+    cardHtml.querySelector('h3').innerText = card.name;
+    cardHtml.querySelector('p').innerText = card.description;
+    
     makeCardSwipable(cardHtml);
     cardsDiv.appendChild(cardHtml);
 
@@ -106,7 +115,7 @@ const makeCardSwipable = (el) => {
             console.log('Right swipe');
         } else {
             console.log('Left swipe');
-        }
+        }   
 
         activeCard = cardsStorage.shift();
         renderAllCards();
