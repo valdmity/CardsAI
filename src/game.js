@@ -16,6 +16,11 @@ var cardsStorage = [
         "photo_url": "https://clck.ru/34ZeFQ",
         "name": "Технарь",
         "description": "Жи есть?",
+    },
+    {
+        "photo_url": "",
+        "name": "...?",
+        "description": "Вилкой в глаз или в яндекс раз?",
     }
 ]; // array of card objects
 
@@ -39,13 +44,18 @@ const renderCard = (card, stackIndex) => {
     */
     const cardHtml = document.querySelector('#cardTemplate').content.cloneNode(true).querySelector(".card");
 
-    const img = document.createElement('img');
-    img.src = card.photo_url;
-    cardHtml.appendChild(img);
-
+    if (card.photo_url != "")
+    {
+        const img = document.createElement('img');
+        img.src = card.photo_url;
+        cardHtml.appendChild(img);
+    }
     cardHtml.querySelector('h3').innerText = card.name;
     cardHtml.querySelector('p').innerText = card.description;
-    
+
+    cardHtml.style.zIndex = cardsStorage.length - stackIndex;
+    cardHtml.style.transform = `scale(${(20 - stackIndex) / 20}) translateY(${-30 * stackIndex}px)`;
+
     makeCardSwipable(cardHtml);
     cardsDiv.appendChild(cardHtml);
 
@@ -61,7 +71,7 @@ const renderAllCards = () => {
     }
 
     // Мб починить ререндерин, чтоыб картинка по-новой не подгружалась, а карточка просто скейлилась
-    renderCard(activeCard, 0);
+    renderCard(activeCard, -1);
 
     cardsStorage.map((card, index) => renderCard(card, index));
 }

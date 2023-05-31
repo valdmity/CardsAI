@@ -18,7 +18,7 @@ body {
   display: flex;
   flex-direction: column;
   position: relative;
-  opacity: 1;
+  opacity: 0;
   transition: opacity 0.1s ease-in-out;
 }
 
