@@ -12,18 +12,45 @@
   </head>
 
   <body>
-    <div class="board">
-      <div id="cards" class="cards">
+  <div class="header">
+    <div class="resources">
+      <div class="resource">
+        <img src="../resources-images/resource-1.png" alt="Resource 1" class="resource-image">
+        <div class="progress-bar" id="progress-bar-1"></div>
+      </div>
+      <div class="resource">
+        <img src="../resources-images/resource-2.png" alt="Resource 2" class="resource-image">
+        <div class="progress-bar" id="progress-bar-2"></div>
+      </div>
+      <div class="resource">
+        <img src="../resources-images/resource-3.png" alt="Resource 3" class="resource-image">
+        <div class="progress-bar" id="progress-bar-3"></div>
+      </div>
+      <div class="resource">
+        <img src="../resources-images/resource-4.png" alt="Resource 4" class="resource-image">
+        <div class="progress-bar" id="progress-bar-4"></div>
       </div>
     </div>
+  </div>
+  <div class="board">
+    <div id="cards" class="cards"></div>
+  </div>
+  <div class="selection-dot left-dot" id="left">
+    <div class="dot-text"></div>
+  </div>
+
+  <div class="selection-dot right-dot" id="right">
+    <div class="dot-text"></div>
+  </div>
+
   </body>
-  
+
   <template id="cardTemplate">
     <div class="card">
       <h3>Влад А4</h3>
       <div class="textContainer">
         <p>Погнали пить пиво??</p>
-      <div>
+      </div>
     </div>
   </template>
 

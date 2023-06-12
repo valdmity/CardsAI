@@ -4,25 +4,80 @@ const HOST = 'http://127.0.0.1:8000'
 
 const board = document.querySelector('.board');
 const cardsDiv = document.getElementById('cards');
-var activeCard = {
+let activeCard = {
     "photo_url": "https://clck.ru/34ZeDi",
     "name": "Влад А4",
     "description": "Погнали пить пиво??",
+    "left": {
+        "title": "Нет...",
+        "changes": [50, 20, 30, 10]
+    },
+    "right": {
+        "title": "Да!",
+        "changes": [20, 40, 10, 60]
+    }
 };
-var activeCardElement = undefined;
+let activeCardElement = undefined;
 
-var cardsStorage = [
+let cardsStorage = [
     {
         "photo_url": "https://clck.ru/34ZeFQ",
         "name": "Технарь",
         "description": "Жи есть?",
+        "left": {
+            "title": "Есть",
+            "changes": [10, 0, 0, -10]
+        },
+        "right": {
+            "title": "Возможно",
+            "changes": [0, -10, 0, 10]
+        }
     },
     {
         "photo_url": "",
-        "name": "...?",
+        "name": "???",
         "description": "Вилкой в глаз или в яндекс раз?",
+        "left": {
+            "title": "Вилкой",
+            "changes": [0, 10, -10, 0]
+        },
+        "right": {
+            "title": "В Яндекс",
+            "changes": [0, 0, 10, -10]
+        }
     }
 ]; // array of card objects
+
+// Пример изменения заполненности ресурса с id "progress-bar-1"
+let progressBars = [
+    document.getElementById("progress-bar-1"),
+    document.getElementById("progress-bar-2"),
+    document.getElementById("progress-bar-3"),
+    document.getElementById("progress-bar-4")
+];
+
+const leftDotText = document.querySelector('.left-dot .dot-text');
+const rightDotText = document.querySelector('.right-dot .dot-text');
+updateSelectionDots();
+
+function updateSelectionDots(){
+    leftDotText.textContent = activeCard.left.title;
+    rightDotText.textContent = activeCard.right.title;
+}
+
+function updateProgressBar(progressBar, percentage) {
+    let height = progressBar.style.height;
+    if (height.length === 0){
+        height = "0";
+    }
+    progressBar.style.height = (Math.max(0, Math.min(parseInt(height) + percentage, 100))).toString() + "%";
+}
+
+function updateResources(changes) {
+    for (let i = 0; i < 4; i++) {
+        updateProgressBar(progressBars[i], changes[i]);
+    }
+}
 
 const renderCard = (card, stackIndex) => {
     /*const cardHtml = document.createElement('div');
@@ -53,7 +108,7 @@ const renderCard = (card, stackIndex) => {
     cardHtml.querySelector('h3').innerText = card.name;
     cardHtml.querySelector('p').innerText = card.description;
 
-    cardHtml.style.zIndex = cardsStorage.length - stackIndex;
+    cardHtml.style.zIndex = (cardsStorage.length - stackIndex).toString();
     cardHtml.style.transform = `scale(${(20 - stackIndex) / 20}) translateY(${-30 * stackIndex}px)`;
 
     makeCardSwipable(cardHtml);
@@ -123,11 +178,14 @@ const makeCardSwipable = (el) => {
 
         if (event.deltaX > 0) {
             console.log('Right swipe');
+            updateResources(activeCard.right.changes);
         } else {
             console.log('Left swipe');
-        }   
+            updateResources(activeCard.left.changes);
+        }
 
         activeCard = cardsStorage.shift();
+        updateSelectionDots();
         renderAllCards();
     });
 }
@@ -143,5 +201,3 @@ fetchCards().then(cards => {
 
 renderAllCards(); // рендерим заглушки
 board.classList.add('loaded');
-
-
