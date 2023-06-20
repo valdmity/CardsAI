@@ -109,24 +109,34 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 }
 
 .resource {
   position: relative;
   margin: 35px;
+  z-index: 1;
+  overflow: hidden;
 }
 
 .resource-image {
   width: 50px;
+  position: relative;
 }
 
 .progress-bar {
   position: absolute;
-  bottom: 0;
+  top: 0;
   left: 0;
   width: 100%;
-  height: 0;
-  background-color: white;
+  height: 60%;
+  overflow: hidden;
+  z-index: 2;
+}
+
+
+.progress-bar-image {
+  width: 50px;
 }
 
 .selection-dot {

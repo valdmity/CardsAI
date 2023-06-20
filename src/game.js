@@ -1,14 +1,15 @@
 'use strict';
-'ебал в рот этот js анон пж';
 
 const HOST = 'http://127.0.0.1:8000'
 const board = document.querySelector('.board');
 const cardsDiv = document.getElementById('cards');
+const left = document.querySelector('.left-dot .dot-text');
+const right = document.querySelector('.right-dot .dot-text');
 const Direction = {
     Left: 0,
     Right: 1
 }
-const cardsStorage = [
+const cardsStorage =  [
     {
         "photo_url": "https://clck.ru/34ZeDi",
         "name": "Влад А4",
@@ -80,15 +81,18 @@ async function renderCards() {
 async function onCardSwipe(direction) {
     const swipedCardHtml = displayedCards.shift();
     const swipedCardInfo = swipedCardHtml.cardInfo;
-    await fetch(`${HOST}/api/swipe`, {
+    let resources = await fetch(`${HOST}/api/swipe`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
         },
         body: `{"card_id":"${swipedCardInfo.id}", "direction":"${direction === 0 ? "left" : "right"}"}`
-    });
+    }).then(r => r.json());
 
     // TODO something useful or not so
+    let activeCard = getActiveCard();
+    left.textContent = activeCard.cardInfo.left.title;
+    right.textContent = activeCard.cardInfo.right.title;
 
     const newCard = await fetchCard();
     if (newCard) {
@@ -98,7 +102,7 @@ async function onCardSwipe(direction) {
         endGame();
         return;
     }
-    renderCards();
+    await renderCards();
 }
 
 
@@ -106,14 +110,15 @@ async function onCardSwipe(direction) {
 let _currentCardNum = 0;
 async function fetchCard() {
     _currentCardNum++;
-    const res = (await fetch(`${HOST}/api/cards`).then(res => res.json()));
+    const res = await fetch(`${HOST}/api/cards`).then(res => res.json());
     if (_currentCardNum >= res.length)
         return null;
     return res[_currentCardNum - 1];
 }
 async function fetchCards(cardsCount) {
     _currentCardNum += cardsCount;
-    const res = (await fetch(`${HOST}/api/cards`).then(res => res.json()));
+    const res = await fetch(`${HOST}/api/cards`)
+        .then(res => res.json());
     const endInd = Math.min(_currentCardNum, res.length);
     return res.slice(_currentCardNum - cardsCount, endInd);
 }
