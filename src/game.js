@@ -60,7 +60,7 @@ let displayedCards = cardsStorage.map((card, index) => createCardHtml(card, inde
 
 const CARD_ON_DISPLAY = 5;
 
-const getActiveCard = () => displayedCards[0];
+const getActiveCard = () => displayedCards.length === 0 ? null : displayedCards[0];
 
 
 async function startGame() {

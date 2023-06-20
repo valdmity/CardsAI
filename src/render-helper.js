@@ -20,6 +20,11 @@ const createCardHtml = (card) => {
 }
 
 const updateSelectionDots = (left, right, card) => {
+    if (card == null) {
+        left.textContent = null;
+        right.textContent = null;
+        return;
+    }
     left.textContent = card.cardInfo.left.title;
     right.textContent = card.cardInfo.right.title;
 }
@@ -35,7 +40,6 @@ const updateProgressBar = (progressBar, percentage) => {
     if (height.length === 0){
         height = "0";
     }
-    console.log(height);
     progressBar.style.height = (Math.max(0, Math.min(parseInt(height) + percentage, 100))).toString() + "%";
 }
 
