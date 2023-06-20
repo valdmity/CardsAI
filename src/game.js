@@ -64,6 +64,13 @@ const getActiveCard = () => displayedCards.length === 0 ? null : displayedCards[
 
 
 async function startGame() {
+    let resources = await fetch(`${HOST}/api/resources`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+        }
+    }).then(r => r.json());
+    updateResources(progressBars, resources);
     displayedCards = (await fetchCards(CARD_ON_DISPLAY)).map(createCardHtml);
     await renderCards();
     board.classList.add('loaded');

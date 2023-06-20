@@ -31,7 +31,9 @@ const updateSelectionDots = (left, right, card) => {
 
 const updateResources = (progressBars, resources) => {
     for (let i = 0; i < 4; i++) {
-        updateProgressBar(progressBars[i], resources[i] * 10);
+        let resource = resources[i];
+        let percentage = resource === 0 ? 100 : -resource * 10;
+        updateProgressBar(progressBars[i], percentage);
     }
 }
 
