@@ -19,6 +19,26 @@ const createCardHtml = (card) => {
     return cardHtml;
 }
 
+const updateSelectionDots = (left, right, card) => {
+    left.textContent = card.cardInfo.left.title;
+    right.textContent = card.cardInfo.right.title;
+}
+
+const updateResources = (progressBars, resources) => {
+    for (let i = 0; i < 4; i++) {
+        updateProgressBar(progressBars[i], resources[i] * 10);
+    }
+}
+
+const updateProgressBar = (progressBar, percentage) => {
+    let height = progressBar.style.height;
+    if (height.length === 0){
+        height = "0";
+    }
+    console.log(height);
+    progressBar.style.height = (Math.max(0, Math.min(parseInt(height) + percentage, 100))).toString() + "%";
+}
+
 const arrangeDisplayedCards = (displayedCards) => {
     for (let i = 0; i < displayedCards.length; i++) {
         displayedCards[i].style.zIndex = (displayedCards.length - i).toString();

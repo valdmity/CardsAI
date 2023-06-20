@@ -5,6 +5,12 @@ const board = document.querySelector('.board');
 const cardsDiv = document.getElementById('cards');
 const left = document.querySelector('.left-dot .dot-text');
 const right = document.querySelector('.right-dot .dot-text');
+let progressBars = [
+    document.getElementById("progress-bar-1"),
+    document.getElementById("progress-bar-2"),
+    document.getElementById("progress-bar-3"),
+    document.getElementById("progress-bar-4")
+];
 const Direction = {
     Left: 0,
     Right: 1
@@ -73,7 +79,9 @@ function endGame() {
 async function renderCards() {
     cardsDiv.innerHTML = '';
     arrangeDisplayedCards(displayedCards);
-    makeCardSwipeable(displayedCards[0], onCardSwipe);
+    let activeCard = getActiveCard();
+    updateSelectionDots(left, right, activeCard);
+    makeCardSwipeable(activeCard, onCardSwipe);
     displayedCards.forEach(card => cardsDiv.appendChild(card))
 }
 
@@ -90,9 +98,9 @@ async function onCardSwipe(direction) {
     }).then(r => r.json());
 
     // TODO something useful or not so
+    updateResources(progressBars, resources);
     let activeCard = getActiveCard();
-    left.textContent = activeCard.cardInfo.left.title;
-    right.textContent = activeCard.cardInfo.right.title;
+    updateSelectionDots(left, right, activeCard);
 
     const newCard = await fetchCard();
     if (newCard) {
