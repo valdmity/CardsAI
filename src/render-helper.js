@@ -43,7 +43,7 @@ const updateResources = (progressBars, newResources, oldResources) => {
     }
 
     for (let i = 0; i < 4; i++) {
-        let percentage = newResources[i] === 0 ? 100 : -newResources[i] * 10;
+        let percentage = 80 - 0.60 * newResources[i];
         let diff = newResources[i] - oldResources[i];
         const progressBar = progressBars[i]
         let height = progressBar.style.height;
@@ -51,8 +51,7 @@ const updateResources = (progressBars, newResources, oldResources) => {
             height = "0";
         }
 
-        const perc = Math.max(0, Math.min(parseInt(height) + percentage, 100));
-        progressBar.style.height = (15 + 0.65 * perc).toString() + "%";
+        progressBar.style.height = percentage.toString() + "%";
 
         if (diff > 0) {
             progressBar.style.boxShadow = "0px 0px 10px rgba(0, 255, 0, 255)";
