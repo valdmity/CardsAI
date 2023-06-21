@@ -15,64 +15,24 @@ const Direction = {
     Left: 0,
     Right: 1
 }
-const cardsStorage =  [
-    {
-        "photo_url": "https://clck.ru/34ZeDi",
-        "name": "Влад А4",
-        "description": "Погнали пить пиво??",
-        "left": {
-            "title": "Нет...",
-            "changes": [50, 20, 30, 10]
-        },
-        "right": {
-            "title": "Да!",
-            "changes": [20, 40, 10, 60]
-        }
-    },
-    {
-        "photo_url": "https://clck.ru/34ZeFQ",
-        "name": "Технарь",
-        "description": "Жи есть?",
-        "left": {
-            "title": "Есть",
-            "changes": [10, 0, 0, -10]
-        },
-        "right": {
-            "title": "Возможно",
-            "changes": [0, -10, 0, 10]
-        }
-    },
-    {
-        "photo_url": "",
-        "name": "???",
-        "description": "Вилкой в глаз или в яндекс раз?",
-        "left": {
-            "title": "Вилкой",
-            "changes": [0, 10, -10, 0]
-        },
-        "right": {
-            "title": "В Яндекс",
-            "changes": [0, 0, 10, -10]
-        }
-    }
-]; // array of card objects, TODO: remove
-let displayedCards = cardsStorage.map((card, index) => createCardHtml(card, index))
-
+let displayedCards = [];
 const CARD_ON_DISPLAY = 5;
-
 const getActiveCard = () => displayedCards.length === 0 ? null : displayedCards[0];
+let resources = [];
 
 
 async function startGame() {
-    let resources = await fetch(`${HOST}/api/resources`, {
+    resources = await fetch(`${HOST}/api/resources`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
         }
     }).then(r => r.json());
-    updateResources(progressBars, resources);
+
+    updateResources(progressBars, resources, resources);
     displayedCards = (await fetchCards(CARD_ON_DISPLAY)).map(createCardHtml);
     await renderCards();
+    document.addEventListener("onCardSwipe", (event) => handleCardSwipe(event.detail.direction))
     board.classList.add('loaded');
 }
 
@@ -84,34 +44,34 @@ function endGame() {
 
 
 async function renderCards() {
-    cardsDiv.innerHTML = '';
     arrangeDisplayedCards(displayedCards);
     let activeCard = getActiveCard();
     updateSelectionDots(left, right, activeCard);
-    makeCardSwipeable(activeCard, onCardSwipe);
+    makeCardSwipeable(activeCard);
     displayedCards.forEach(card => cardsDiv.appendChild(card))
 }
 
 
-async function onCardSwipe(direction) {
+async function handleCardSwipe(direction) {
     const swipedCardHtml = displayedCards.shift();
     const swipedCardInfo = swipedCardHtml.cardInfo;
-    let resources = await fetch(`${HOST}/api/swipe`, {
+    let newResources = await fetch(`${HOST}/api/swipe`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
         },
         body: `{"card_id":"${swipedCardInfo.id}", "direction":"${direction === 0 ? "left" : "right"}"}`
     }).then(r => r.json());
-
+    console.log(newResources, resources);
+    updateResources(progressBars, newResources, resources);
+    resources = newResources;
     // TODO something useful or not so
-    updateResources(progressBars, resources);
-    let activeCard = getActiveCard();
-    updateSelectionDots(left, right, activeCard);
 
+    setTimeout(() => cardsDiv.removeChild(swipedCardHtml), 1000);
     const newCard = await fetchCard();
     if (newCard) {
         displayedCards.push(createCardHtml(newCard));
+        updateSelectionDots(left, right, getActiveCard());
     }
     if (displayedCards.length === 0) {
         endGame();
