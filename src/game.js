@@ -1,6 +1,6 @@
 'use strict';
 
-const HOST = 'http://185.87.50.169:8000'
+const HOST = 'http://185.87.50.169:8000';
 const board = document.querySelector('.board');
 const cardsDiv = document.getElementById('cards');
 const left = document.querySelector('.left-dot .dot-text');
@@ -25,6 +25,7 @@ let resources = [];
 async function startGame() {
     resources = await fetch(`${HOST}/api/resources`, {
         method: 'GET',
+        credentials: "include",
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
         }
@@ -64,6 +65,7 @@ async function handleCardSwipe(direction) {
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
         },
+        credentials: "include",
         body: `{"card_id":"${swipedCardInfo.id}", "direction":"${direction === 0 ? "left" : "right"}"}`
     }).then(r => r.json());
     console.log(newResources, resources);
@@ -102,7 +104,9 @@ let _currentCardNum = 0;
 
 async function fetchCard() {
     _currentCardNum++;
-    const res = await fetch(`${HOST}/api/cards`).then(res => res.json());
+    const res = await fetch(`${HOST}/api/cards`, {
+        credentials: "include"
+    }).then(res => res.json());
     if (_currentCardNum >= res.length)
         return null;
     return res[_currentCardNum - 1];
@@ -110,7 +114,9 @@ async function fetchCard() {
 
 async function fetchCards(cardsCount) {
     _currentCardNum += cardsCount;
-    const res = await fetch(`${HOST}/api/cards`).then(res => res.json());
+    const res = await fetch(`${HOST}/api/cards`, {
+        credentials: "include"
+    }).then(res => res.json());
     const endInd = Math.min(_currentCardNum, res.length);
     return res.slice(_currentCardNum - cardsCount, endInd);
 }
