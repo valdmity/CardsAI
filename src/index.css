@@ -50,6 +50,10 @@
     margin-left: 1vh;
 }
 
+.mobile_logo {
+    display: none;
+}
+
 @media (max-width: 1200px) {
     .menu {
         margin: 23vh 0;
@@ -75,5 +79,9 @@
 
     .player span {
         display: none;
+    }
+
+    .mobile_logo {
+        display: inherit;
     }
 }
