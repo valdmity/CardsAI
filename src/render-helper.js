@@ -21,7 +21,7 @@ const createCardHtml = (card) => {
 
     if (card.photo_url !== "")
     {
-        const imageHolder = cardHtml.getElementById('imageHolder');
+        const imageHolder = cardHtml.querySelector('#imageHolder');
         const img = document.createElement('img');
         img.src = card.photo_url;
         img.alt = "Изображение персонажа";
