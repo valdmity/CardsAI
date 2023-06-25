@@ -21,4 +21,4 @@ jobs:
           script: |
             docker stop front || true
             docker rm front || true
-            docker run  --name front -p 3000:3000 -d nmzgnv/cards_ai_front:main -c "uvicorn main:app --host 0.0.0.0 --port 3000"
+            docker run --name front -p 3000:80 -d nmzgnv/cards_ai_front:main
