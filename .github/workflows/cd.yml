@@ -21,4 +21,4 @@ jobs:
           script: |
             docker stop front || true
             docker rm front || true
-            docker run --name front -p 3000:80 -d nmzgnv/cards_ai_front:main
+            docker run --pull=always --name front -p 3000:80 -d nmzgnv/cards_ai_front:main
