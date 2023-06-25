@@ -83,6 +83,7 @@ async function handleCardSwipe(direction) {
 
 // TODO переписать код ниже после добавления новых ручек на бэке
 let _currentCardNum = 0;
+
 async function fetchCard() {
     _currentCardNum++;
     const res = await fetch(`${HOST}/api/cards`).then(res => res.json());
@@ -90,10 +91,12 @@ async function fetchCard() {
         return null;
     return res[_currentCardNum - 1];
 }
+
 async function fetchCards(cardsCount) {
     _currentCardNum += cardsCount;
-    const res = await fetch(`${HOST}/api/cards`)
-        .then(res => res.json());
+    const res = await fetch(`${HOST}/api/cards`, {
+        credentials: "same-origin"
+    }).then(res => res.json());
     const endInd = Math.min(_currentCardNum, res.length);
     return res.slice(_currentCardNum - cardsCount, endInd);
 }
