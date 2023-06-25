@@ -8,6 +8,7 @@ let progressBarsAnimTimeouts = [];
 document.addEventListener('keydown', (event) => {
     if (event.repeat) return;
     if (coolDown) return;
+    if (coolDown) return;
     if (event.code !== 'ArrowRight' && event.code !== 'ArrowLeft') return;
     const dir = (event.code !== 'ArrowLeft' ? -1 : 1);
     swipeCard(getActiveCard(), -10000 * dir, 500, -90 * dir);
@@ -143,9 +144,8 @@ const swipeCard = (card, toX, toY, rotate) => {
     setTimeout(() => restoreSelectionDotsRender(), 200);
 
     card.style.transform = `translate(${toX}px, ${(toY)}px) rotate(${rotate}deg)`;
-
     document.dispatchEvent(new CustomEvent("onCardSwipe", {
-        detail: { direction: (event.deltaX > 0 ? Direction.Right : Direction.Left) }
+        detail: { direction: (toX > 0 ? Direction.Right : Direction.Left) }
     }));
 }
 
