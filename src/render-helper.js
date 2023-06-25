@@ -4,7 +4,10 @@ const cardTemplate = document.querySelector('#cardTemplate');
 const leftDot = document.querySelector(".left-dot");
 const rightDot = document.querySelector(".right-dot");
 let progressBarsAnimTimeouts = [];
+
 document.addEventListener('keydown', (event) => {
+    if (event.repeat) return;
+    if (coolDown) return;
     if (event.code !== 'ArrowRight' && event.code !== 'ArrowLeft') return;
     const dir = (event.code !== 'ArrowLeft' ? -1 : 1);
     swipeCard(getActiveCard(), -10000 * dir, 500, -90 * dir);
