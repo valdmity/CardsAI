@@ -1,0 +1,24 @@
+name: Deploy
+
+on:
+  workflow_run:
+    workflows: [ "Publish" ]
+    types:
+      - completed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy using ssh
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          port: 22
+          script: |
+            set -e
+            docker stop front
+            docker run  --name front -p 8000:8000 -d nmzgnv/cards_ai -c "uvicorn main:app --host 0.0.0.0 --port 8000"
