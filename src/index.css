@@ -3,6 +3,8 @@
     box-sizing: border-box;
     padding: 0;
     margin: 0;
+
+    overflow: hidden;
 }
 
 .menu {
@@ -10,13 +12,21 @@
     flex-direction: column;
     justify-content: space-between;
     align-items: flex-start;
-    margin: 25vh 0 0 17.5vh;
+    margin: 25vh 17.5vh 0 17.5vh;
 }
 
 .title {
     color: #000;
     font-size: 20vh;
     font-weight: 700;
+
+    display: flex;
+    align-items: center;
+    gap: 50px;
+}
+
+.logo {
+    height: 21vh;
 }
 
 .player {
@@ -26,7 +36,6 @@
     align-items: center;
     text-decoration: none;
 }
-
 
 .player img {
     width: 5vh;
@@ -39,4 +48,32 @@
     color: #000;
     font-size: 4vh;
     margin-left: 1vh;
+}
+
+@media (max-width: 1200px) {
+    .menu {
+        margin: 23vh 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 50px;
+    }
+
+    .title {
+        text-align: center;
+        font-size: 10vh;
+    }
+
+    .logo {
+        display: none;
+    }
+
+    .player img {
+        width: 100px;
+        height: auto;
+    }
+
+    .player span {
+        display: none;
+    }
 }
