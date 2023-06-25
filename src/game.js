@@ -1,6 +1,6 @@
 'use strict';
 
-const HOST = 'http://185.87.50.169:8000'
+const HOST = 'http://185.87.50.169:8000'; //"http://127.0.0.1:8000"
 const board = document.querySelector('.board');
 const cardsDiv = document.getElementById('cards');
 const left = document.querySelector('.left-dot .dot-text');
@@ -90,11 +90,6 @@ async function handleCardSwipe(direction) {
         }
     }
     setTimeout(() => cardsDiv.removeChild(swipedCardHtml), 1000);
-    const newCard = await fetchCard();
-    if (newCard) {
-        displayedCards.push(createCardHtml(newCard));
-        updateSelectionDots(left, right, getActiveCard());
-    }
     if (displayedCards.length === 0) {
         endGame();
         return;
