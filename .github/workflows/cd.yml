@@ -19,7 +19,6 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
           port: 22
           script: |
-            set -e
-            docker stop front
-            docker rm front
+            docker stop front || true
+            docker rm front || true
             docker run  --name front -p 8000:8000 -d nmzgnv/cards_ai_front:main -c "uvicorn main:app --host 0.0.0.0 --port 8000"
