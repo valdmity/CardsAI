@@ -23,6 +23,7 @@ const createCardHtml = (card) => {
     {
         const img = document.createElement('img');
         img.src = card.photo_url;
+        img.alt = "Изображение персонажа";
         cardHtml.appendChild(img);
     }
 
