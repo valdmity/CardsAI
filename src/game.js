@@ -1,6 +1,6 @@
 'use strict';
 
-const HOST = 'http://185.87.50.169:3000'
+const HOST = 'http://185.87.50.169:8000'
 const board = document.querySelector('.board');
 const cardsDiv = document.getElementById('cards');
 const left = document.querySelector('.left-dot .dot-text');
@@ -25,13 +25,14 @@ let resources = [];
 async function startGame() {
     resources = await fetch(`${HOST}/api/resources`, {
         method: 'GET',
+        credentials: "include",
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
         }
     }).then(r => r.json());
 
     updateResources(progressBars, resources, resources);
-    displayedCards = (await fetchCards(CARD_ON_DISPLAY)).map(createCardHtml);
+    displayedCards = (await fetchCards(2 * CARD_ON_DISPLAY)).map(createCardHtml);
     await renderCards();
     document.addEventListener("onCardSwipe", handleCardSwipe)
     document.addEventListener("onGameLose", handleGameLose)
@@ -56,7 +57,11 @@ async function renderCards() {
 async function handleSwipeEvent(event) {
     await handleCardSwipe(event.detail.direction)
 }
+
+let coolDown = false;
+
 async function handleCardSwipe(direction) {
+    coolDown = true;
     const swipedCardHtml = displayedCards.shift();
     const swipedCardInfo = swipedCardHtml.cardInfo;
     let newResources = await fetch(`${HOST}/api/swipe`, {
@@ -64,6 +69,7 @@ async function handleCardSwipe(direction) {
         headers: {
             'Content-Type': 'application/json;charset=utf-8'
         },
+        credentials: "include",
         body: `{"card_id":"${swipedCardInfo.id}", "direction":"${direction === 0 ? "left" : "right"}"}`
     }).then(r => r.json());
     console.log(newResources, resources);
@@ -77,6 +83,12 @@ async function handleCardSwipe(direction) {
     updateResources(progressBars, newResources, resources);
     resources = newResources;
 
+    if (displayedCards.length === CARD_ON_DISPLAY * 2 - 1) {
+        const newCards = await fetchCards(CARD_ON_DISPLAY);
+        if (newCards) {
+            displayedCards = [...displayedCards, ...newCards.map(createCardHtml)];
+        }
+    }
     setTimeout(() => cardsDiv.removeChild(swipedCardHtml), 1000);
     const newCard = await fetchCard();
     if (newCard) {
@@ -87,7 +99,10 @@ async function handleCardSwipe(direction) {
         endGame();
         return;
     }
+    updateSelectionDots(left, right, getActiveCard());
     await renderCards();
+    coolDown = false;
+    console.log(coolDown);
 }
 
 async function handleGameLose() {
@@ -97,22 +112,12 @@ async function handleGameLose() {
 }
 
 
-// TODO переписать код ниже после добавления новых ручек на бэке
-let _currentCardNum = 0;
-
-async function fetchCard() {
-    _currentCardNum++;
-    const res = await fetch(`${HOST}/api/cards`).then(res => res.json());
-    if (_currentCardNum >= res.length)
-        return null;
-    return res[_currentCardNum - 1];
-}
-
 async function fetchCards(cardsCount) {
-    _currentCardNum += cardsCount;
-    const res = await fetch(`${HOST}/api/cards`).then(res => res.json());
-    const endInd = Math.min(_currentCardNum, res.length);
-    return res.slice(_currentCardNum - cardsCount, endInd);
+    console.log('base');
+    const res = await fetch(`${HOST}/api/cards?count=${cardsCount}`, {
+        credentials: "include"
+    }).then(res => res.json());
+    return res;
 }
 
 startGame();

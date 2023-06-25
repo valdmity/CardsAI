@@ -5,8 +5,19 @@ const leftDot = document.querySelector(".left-dot");
 const rightDot = document.querySelector(".right-dot");
 let progressBarsAnimTimeouts = [];
 
+document.addEventListener('keydown', (event) => {
+    if (event.repeat) return;
+    if (coolDown) return;
+    if (coolDown) return;
+    if (event.code !== 'ArrowRight' && event.code !== 'ArrowLeft') return;
+    const dir = (event.code !== 'ArrowLeft' ? -1 : 1);
+    swipeCard(getActiveCard(), -10000 * dir, 500, -90 * dir);
+
+});
+
+
 const createCardHtml = (card) => {
-    const cardHtml = cardTemplate.content.cloneNode(true).querySelector(".card");
+    const cardHtml= cardTemplate.content.cloneNode(true).querySelector(".card");
 
     if (card.photo_url !== "")
     {
@@ -54,10 +65,10 @@ const updateResources = (progressBars, newResources, oldResources) => {
         progressBar.style.height = percentage.toString() + "%";
 
         if (diff > 0) {
-            progressBar.style.boxShadow = "0px 0px 10px rgba(0, 255, 0, 255)";
+            progressBar.style.boxShadow = "0px 1vh 0.5vh rgba(0, 255, 0, 0.5)";
         }
         if (diff < 0) {
-            progressBar.style.boxShadow = "0px 0px 10px rgba(255, 0, 0, 255)";
+            progressBar.style.boxShadow = "0px 1vh 0.5vh rgba(255, 0, 0, 0.5)";
         }
     }
 
@@ -72,7 +83,7 @@ const updateResources = (progressBars, newResources, oldResources) => {
 const arrangeDisplayedCards = (displayedCards) => {
     for (let i = 0; i < displayedCards.length; i++) {
         displayedCards[i].style.zIndex = (displayedCards.length - i).toString();
-        displayedCards[i].style.transform = `scale(${(20 - i) / 20}) translateY(${-30 * i}px)`;
+        displayedCards[i].style.transform = `scale(${(20 - i) / 20}) translateY(${-3 * i}vh)`;
     }
 }
 
@@ -100,13 +111,13 @@ const makeCardSwipeable = (el) => {
 
     hammer.on('panend', event => {
         el.classList.remove('moving');
-
+        const card = event.target;
         const moveOutWidth = document.body.clientWidth;
         const isKeep = Math.abs(event.deltaX) < 80;
 
-        event.target.classList.toggle('removed', !isKeep);
+        card.classList.toggle('removed', !isKeep);
         if (isKeep) {
-            event.target.style.transform = '';
+            card.style.transform = '';
             // держали карточку, но она вернулась в исходную позицию
             updateSelectionDotsRender(0);
             return;
@@ -117,22 +128,26 @@ const makeCardSwipeable = (el) => {
 
         const toX = event.deltaX > 0 ? endX : -endX;
         const toY = event.deltaY > 0 ? endY : -endY;
-        updateSelectionDotsRender(toX);
-        setTimeout(() => restoreSelectionDotsRender(), 200);
 
         const xMulti = event.deltaX * 0.03;
         const yMulti = event.deltaY / 80;
 
         const rotate = xMulti * yMulti;
 
-        event.target.style.transform = `translate(${toX}px, ${(toY + event.deltaY)}px) rotate(${rotate}deg)`;
-
-        document.dispatchEvent(new CustomEvent("onCardSwipe", {
-            detail: { direction: (event.deltaX > 0 ? Direction.Right : Direction.Left) }
-        }));
+        swipeCard(card, toX, toY, rotate);
     });
 }
 
+
+const swipeCard = (card, toX, toY, rotate) => {
+    updateSelectionDotsRender(toX);
+    setTimeout(() => restoreSelectionDotsRender(), 200);
+
+    card.style.transform = `translate(${toX}px, ${(toY)}px) rotate(${rotate}deg)`;
+    document.dispatchEvent(new CustomEvent("onCardSwipe", {
+        detail: { direction: (toX > 0 ? Direction.Right : Direction.Left) }
+    }));
+}
 
 const updateSelectionDotsRender = (deltaX) => {
     const clientWidth = document.body.clientWidth;
