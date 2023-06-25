@@ -3,7 +3,6 @@
   box-sizing: border-box;
   padding: 0;
   margin: 0;
-  pointer-events: none;
 }
 
 body {
@@ -208,7 +207,7 @@ body {
   color: red;
 }
 
-.menu-link {
+.menu-links {
   color: #828282;
   font-weight: bold;
 
@@ -218,6 +217,11 @@ body {
   padding: 10px;
   margin-top: 20px;
   border-radius: 20px;
+}
+
+.menu-link {
+  color: inherit;
+  text-decoration: none;
 }
 
 .disabled {
