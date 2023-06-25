@@ -1,6 +1,6 @@
 'use strict';
 
-const HOST = 'http://127.0.0.1:8000'
+const HOST = 'http://185.87.50.169:8000'
 const board = document.querySelector('.board');
 const cardsDiv = document.getElementById('cards');
 const left = document.querySelector('.left-dot .dot-text');
@@ -99,6 +99,7 @@ async function handleGameLose() {
 
 // TODO переписать код ниже после добавления новых ручек на бэке
 let _currentCardNum = 0;
+
 async function fetchCard() {
     _currentCardNum++;
     const res = await fetch(`${HOST}/api/cards`).then(res => res.json());
@@ -106,10 +107,12 @@ async function fetchCard() {
         return null;
     return res[_currentCardNum - 1];
 }
+
 async function fetchCards(cardsCount) {
     _currentCardNum += cardsCount;
-    const res = await fetch(`${HOST}/api/cards`)
-        .then(res => res.json());
+    const res = await fetch(`${HOST}/api/cards`, {
+        credentials: "same-origin"
+    }).then(res => res.json());
     const endInd = Math.min(_currentCardNum, res.length);
     return res.slice(_currentCardNum - cardsCount, endInd);
 }
