@@ -5,6 +5,7 @@ const board = document.querySelector('.board');
 const cardsDiv = document.getElementById('cards');
 const left = document.querySelector('.left-dot .dot-text');
 const right = document.querySelector('.right-dot .dot-text');
+const loseScreen = document.getElementById('lose-screen');
 let progressBars = [
     document.getElementById("progress-bar-1"),
     document.getElementById("progress-bar-2"),
@@ -32,7 +33,8 @@ async function startGame() {
     updateResources(progressBars, resources, resources);
     displayedCards = (await fetchCards(CARD_ON_DISPLAY)).map(createCardHtml);
     await renderCards();
-    document.addEventListener("onCardSwipe", (event) => handleCardSwipe(event.detail.direction))
+    document.addEventListener("onCardSwipe", handleCardSwipe)
+    document.addEventListener("onGameLose", handleGameLose)
     board.classList.add('loaded');
 }
 
@@ -51,7 +53,9 @@ async function renderCards() {
     displayedCards.forEach(card => cardsDiv.appendChild(card))
 }
 
-
+async function handleSwipeEvent(event) {
+    await handleCardSwipe(event.detail.direction)
+}
 async function handleCardSwipe(direction) {
     const swipedCardHtml = displayedCards.shift();
     const swipedCardInfo = swipedCardHtml.cardInfo;
@@ -63,9 +67,15 @@ async function handleCardSwipe(direction) {
         body: `{"card_id":"${swipedCardInfo.id}", "direction":"${direction === 0 ? "left" : "right"}"}`
     }).then(r => r.json());
     console.log(newResources, resources);
+
+    if (newResources.detail)
+    {
+        document.dispatchEvent(new CustomEvent("onGameLose"));
+        return;
+    }
+
     updateResources(progressBars, newResources, resources);
     resources = newResources;
-    // TODO something useful or not so
 
     setTimeout(() => cardsDiv.removeChild(swipedCardHtml), 1000);
     const newCard = await fetchCard();
@@ -78,6 +88,12 @@ async function handleCardSwipe(direction) {
         return;
     }
     await renderCards();
+}
+
+async function handleGameLose() {
+    document.removeEventListener("onCardSwipe", handleSwipeEvent);
+    console.log(loseScreen)
+    loseScreen.classList.remove("disabled");
 }
 
 
