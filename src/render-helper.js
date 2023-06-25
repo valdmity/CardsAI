@@ -21,10 +21,11 @@ const createCardHtml = (card) => {
 
     if (card.photo_url !== "")
     {
+        const imageHolder = cardHtml.getElementById('imageHolder');
         const img = document.createElement('img');
         img.src = card.photo_url;
         img.alt = "Изображение персонажа";
-        cardHtml.appendChild(img);
+        imageHolder.appendChild(img);
     }
 
     cardHtml.querySelector('h3').innerText = card.name;

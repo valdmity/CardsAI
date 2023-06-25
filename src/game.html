@@ -1,88 +1,89 @@
 <!DOCTYPE html>
 <html lang="ru">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Cards AI</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;700&display=swap" rel="stylesheet">
-  </head>
+</head>
 
-  <body>
-  <div class="header">
+<body>
+<div class="header">
     <div class="resources">
-      <div class="resource">
-        <img src="assets/images/resource-1.png" alt="Ресурс знаний" class="resource-image">
-        <div class="progress-bar" id="progress-bar-1">
-          <img src="assets/images/progress-bar-1.png" alt="Ресурс знаний" class="progress-bar-image">
+        <div class="resource">
+            <img src="assets/images/resource-1.png" alt="Ресурс знаний" class="resource-image">
+            <div class="progress-bar" id="progress-bar-1">
+                <img src="assets/images/progress-bar-1.png" alt="Ресурс знаний" class="progress-bar-image">
+            </div>
         </div>
-      </div>
-      <div class="resource">
-        <img src="assets/images/resource-2.png" alt="Ресурс дружбы" class="resource-image">
-        <div class="progress-bar" id="progress-bar-2">
-          <img src="assets/images/progress-bar-2.png" alt="Ресурс дружбы" class="progress-bar-image">
+        <div class="resource">
+            <img src="assets/images/resource-2.png" alt="Ресурс дружбы" class="resource-image">
+            <div class="progress-bar" id="progress-bar-2">
+                <img src="assets/images/progress-bar-2.png" alt="Ресурс дружбы" class="progress-bar-image">
+            </div>
         </div>
-      </div>
-      <div class="resource">
-        <img src="assets/images/resource-3.png" alt="Ресурс денег" class="resource-image">
-        <div class="progress-bar" id="progress-bar-3">
-          <img src="assets/images/progress-bar-3.png" alt="Ресурс денег" class="progress-bar-image">
+        <div class="resource">
+            <img src="assets/images/resource-3.png" alt="Ресурс денег" class="resource-image">
+            <div class="progress-bar" id="progress-bar-3">
+                <img src="assets/images/progress-bar-3.png" alt="Ресурс денег" class="progress-bar-image">
+            </div>
         </div>
-      </div>
-      <div class="resource">
-        <img src="assets/images/resource-4.png" alt="Ресурс здоровья" class="resource-image">
-        <div class="progress-bar" id="progress-bar-4">
-          <img src="assets/images/progress-bar-4.png" alt="Ресурс здоровья" class="progress-bar-image">
+        <div class="resource">
+            <img src="assets/images/resource-4.png" alt="Ресурс здоровья" class="resource-image">
+            <div class="progress-bar" id="progress-bar-4">
+                <img src="assets/images/progress-bar-4.png" alt="Ресурс здоровья" class="progress-bar-image">
+            </div>
         </div>
-      </div>
     </div>
-  </div>
-  <div class="board">
+</div>
+<div class="board">
     <div id="cards" class="cards"></div>
-  </div>
-  <div class="selection-dot left-dot" id="left">
+</div>
+<div class="selection-dot left-dot" id="left">
     <div class="dot-text"></div>
-  </div>
+</div>
 
-  <div class="selection-dot right-dot" id="right">
+<div class="selection-dot right-dot" id="right">
     <div class="dot-text"></div>
-  </div>
+</div>
 
-  <div id="lose-screen" class="disabled">
+<div id="lose-screen" class="disabled">
     <div class="screen-overlap">
-      <div class="ending-menu ending-menu_lose">
-        <div class="ending-text ending-text_lose">
-          <b>Отчислен!</b>
-        </div>
-        <img src="assets/images/ending_death.png" width="300" alt="Дракон в огне">
+        <div class="ending-menu ending-menu_lose">
+            <div class="ending-text ending-text_lose">
+                <b>Отчислен!</b>
+            </div>
+            <img src="assets/images/ending_death.png" width="300" alt="Дракон в огне">
 
-        <br>
+            <br>
 
-        <div class="menu-links">
-          <a href="index.html" class="menu-link">Вернуться в меню</a>
+            <div class="menu-links">
+                <a href="index.html" class="menu-link">Вернуться в меню</a>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
+</div>
 
-  </body>
+</body>
 
-  <template id="cardTemplate">
+<template id="cardTemplate">
     <div class="card">
-      <div style="pointer-events: none;">
-        <h3>Влад А4</h3>
-        <div class="textContainer">
-          <p>Погнали пить пиво??</p>
+        <div style="pointer-events: none;">
+            <div id="imageHolder"></div>
+            <h3>Влад А4</h3>
+            <div class="textContainer">
+                <p>Погнали пить пиво??</p>
+            </div>
         </div>
-      </div>
     </div>
-  </template>
+</template>
 
-  <link rel="stylesheet" href="game.css">
-  <script type="text/javascript" src="render-helper.js"></script>
-  <script type="text/javascript" src="game.js"></script>
+<link rel="stylesheet" href="game.css">
+<script type="text/javascript" src="render-helper.js"></script>
+<script type="text/javascript" src="game.js"></script>
 
 </html>
