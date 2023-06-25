@@ -1,6 +1,6 @@
 'use strict';
 
-const HOST = 'http://185.87.50.169:8000';
+const HOST = 'http://127.0.0.1:8000';
 const board = document.querySelector('.board');
 const cardsDiv = document.getElementById('cards');
 const left = document.querySelector('.left-dot .dot-text');
@@ -16,6 +16,12 @@ const Direction = {
     Left: 0,
     Right: 1
 }
+const swipeAudios = [
+    new Audio('assets/sounds/card.mp3'),
+    new Audio('assets/sounds/fast_wind.mp3'),
+    new Audio('assets/sounds/swoosh.mp3'),
+    new Audio('assets/sounds/enderman.mp3'),
+];
 let displayedCards = [];
 const CARD_ON_DISPLAY = 5;
 const getActiveCard = () => displayedCards.length === 0 ? null : displayedCards[0];
@@ -35,6 +41,7 @@ async function startGame() {
     displayedCards = (await fetchCards(CARD_ON_DISPLAY)).map(createCardHtml);
     await renderCards();
     document.addEventListener("onCardSwipe", handleCardSwipe)
+    document.addEventListener("onCardSwipe", playSwipeSound)
     document.addEventListener("onGameLose", handleGameLose)
     board.classList.add('loaded');
 }
@@ -43,6 +50,11 @@ async function startGame() {
 function endGame() {
     // TODO something useful or not so
     console.log('Game over');
+}
+
+async function playSwipeSound() {
+    const randomAudio = swipeAudios[Math.floor(Math.random() * swipeAudios.length)];
+    await randomAudio.play();
 }
 
 
@@ -57,6 +69,7 @@ async function renderCards() {
 async function handleSwipeEvent(event) {
     await handleCardSwipe(event.detail.direction)
 }
+
 async function handleCardSwipe(direction) {
     const swipedCardHtml = displayedCards.shift();
     const swipedCardInfo = swipedCardHtml.cardInfo;
@@ -70,8 +83,7 @@ async function handleCardSwipe(direction) {
     }).then(r => r.json());
     console.log(newResources, resources);
 
-    if (newResources.detail)
-    {
+    if (newResources.detail) {
         document.dispatchEvent(new CustomEvent("onGameLose"));
         return;
     }
