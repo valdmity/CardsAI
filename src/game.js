@@ -1,6 +1,6 @@
 'use strict';
 
-const HOST = 'http://127.0.0.1:8000';
+const HOST = 'http://185.87.50.169:8000';
 const board = document.querySelector('.board');
 const cardsDiv = document.getElementById('cards');
 const left = document.querySelector('.left-dot .dot-text');
@@ -38,7 +38,7 @@ async function startGame() {
     }).then(r => r.json());
 
     updateResources(progressBars, resources, resources);
-    displayedCards = (await fetchCards(CARD_ON_DISPLAY)).map(createCardHtml);
+    displayedCards = (await fetchCards(2 * CARD_ON_DISPLAY)).map(createCardHtml);
     await renderCards();
     document.addEventListener("onCardSwipe", handleCardSwipe)
     document.addEventListener("onCardSwipe", playSwipeSound)
@@ -70,7 +70,14 @@ async function handleSwipeEvent(event) {
     await handleCardSwipe(event.detail.direction)
 }
 
+const sleep = (milliseconds) => {
+    return new Promise(resolve => setTimeout(resolve, milliseconds))
+}
+
+let coolDown = false;
+
 async function handleCardSwipe(direction) {
+    coolDown = true;
     const swipedCardHtml = displayedCards.shift();
     const swipedCardInfo = swipedCardHtml.cardInfo;
     let newResources = await fetch(`${HOST}/api/swipe`, {
@@ -91,17 +98,22 @@ async function handleCardSwipe(direction) {
     updateResources(progressBars, newResources, resources);
     resources = newResources;
 
-    setTimeout(() => cardsDiv.removeChild(swipedCardHtml), 1000);
-    const newCard = await fetchCard();
-    if (newCard) {
-        displayedCards.push(createCardHtml(newCard));
-        updateSelectionDots(left, right, getActiveCard());
+    if (displayedCards.length === CARD_ON_DISPLAY * 2 - 1) {
+        const newCards = await fetchCards(CARD_ON_DISPLAY);
+        if (newCards) {
+            displayedCards = [...displayedCards, ...newCards.map(createCardHtml)];
+        }
     }
+    setTimeout(() => cardsDiv.removeChild(swipedCardHtml), 1000);
     if (displayedCards.length === 0) {
         endGame();
         return;
     }
+    updateSelectionDots(left, right, getActiveCard());
     await renderCards();
+    await sleep(250);
+    coolDown = false;
+    console.log(coolDown);
 }
 
 async function handleGameLose() {
@@ -111,26 +123,12 @@ async function handleGameLose() {
 }
 
 
-// TODO переписать код ниже после добавления новых ручек на бэке
-let _currentCardNum = 0;
-
-async function fetchCard() {
-    _currentCardNum++;
-    const res = await fetch(`${HOST}/api/cards`, {
-        credentials: "include"
-    }).then(res => res.json());
-    if (_currentCardNum >= res.length)
-        return null;
-    return res[_currentCardNum - 1];
-}
-
 async function fetchCards(cardsCount) {
-    _currentCardNum += cardsCount;
-    const res = await fetch(`${HOST}/api/cards`, {
+    console.log('base');
+    const res = await fetch(`${HOST}/api/cards?count=${cardsCount}`, {
         credentials: "include"
     }).then(res => res.json());
-    const endInd = Math.min(_currentCardNum, res.length);
-    return res.slice(_currentCardNum - cardsCount, endInd);
+    return res;
 }
 
 startGame();
