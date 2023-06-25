@@ -102,7 +102,7 @@ const makeCardSwipeable = (el) => {
         el.classList.remove('moving');
 
         const moveOutWidth = document.body.clientWidth;
-        const isKeep = Math.abs(event.deltaX) < 80 || Math.abs(event.velocityX) < 0.5;
+        const isKeep = Math.abs(event.deltaX) < 80;
 
         event.target.classList.toggle('removed', !isKeep);
         if (isKeep) {
