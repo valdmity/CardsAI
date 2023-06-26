@@ -40,7 +40,7 @@ async function startGame() {
     updateResources(progressBars, resources, resources);
     displayedCards = (await fetchCards(2 * CARD_ON_DISPLAY)).map(createCardHtml);
     await renderCards();
-    document.addEventListener("onCardSwipe", handleCardSwipe)
+    document.addEventListener("onCardSwipe", handleSwipeEvent)
     document.addEventListener("onCardSwipe", playSwipeSound)
     document.addEventListener("onGameLose", handleGameLose)
     board.classList.add('loaded');
@@ -48,7 +48,6 @@ async function startGame() {
 
 
 function endGame() {
-    // TODO something useful or not so
     console.log('Game over');
 }
 
@@ -88,8 +87,7 @@ async function handleCardSwipe(direction) {
         credentials: "include",
         body: `{"card_id":"${swipedCardInfo.id}", "direction":"${direction === 0 ? "left" : "right"}"}`
     }).then(r => r.json());
-    console.log(newResources, resources);
-
+    console.log(direction);
     if (newResources.detail) {
         document.dispatchEvent(new CustomEvent("onGameLose"));
         return;
@@ -113,7 +111,6 @@ async function handleCardSwipe(direction) {
     await renderCards();
     await sleep(250);
     coolDown = false;
-    console.log(coolDown);
 }
 
 async function handleGameLose() {
@@ -124,7 +121,6 @@ async function handleGameLose() {
 
 
 async function fetchCards(cardsCount) {
-    console.log('base');
     const res = await fetch(`${HOST}/api/cards?count=${cardsCount}`, {
         credentials: "include"
     }).then(res => res.json());

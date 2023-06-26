@@ -12,15 +12,13 @@ document.addEventListener('keydown', (event) => {
     if (event.code !== 'ArrowRight' && event.code !== 'ArrowLeft') return;
     const dir = (event.code !== 'ArrowLeft' ? -1 : 1);
     swipeCard(getActiveCard(), -10000 * dir, 500, -90 * dir);
-
 });
 
 
 const createCardHtml = (card) => {
     const cardHtml= cardTemplate.content.cloneNode(true).querySelector(".card");
 
-    if (card.photo_url !== "")
-    {
+    if (card.photo_url !== "") {
         const imageHolder = cardHtml.querySelector('#imageHolder');
         const img = document.createElement('img');
         img.src = card.photo_url;
@@ -126,16 +124,16 @@ const makeCardSwipeable = (el) => {
         }
 
         const endX = Math.max(Math.abs(event.velocityX) * moveOutWidth, moveOutWidth);
+
         const endY = Math.abs(event.velocityY) * moveOutWidth;
-
         const toX = event.deltaX > 0 ? endX : -endX;
-        const toY = event.deltaY > 0 ? endY : -endY;
 
+        const toY = event.deltaY > 0 ? endY : -endY;
         const xMulti = event.deltaX * 0.03;
+
         const yMulti = event.deltaY / 80;
 
         const rotate = xMulti * yMulti;
-
         swipeCard(card, toX, toY, rotate);
     });
 }
@@ -144,7 +142,6 @@ const makeCardSwipeable = (el) => {
 const swipeCard = (card, toX, toY, rotate) => {
     updateSelectionDotsRender(toX);
     setTimeout(() => restoreSelectionDotsRender(), 200);
-
     card.style.transform = `translate(${toX}px, ${(toY)}px) rotate(${rotate}deg)`;
     document.dispatchEvent(new CustomEvent("onCardSwipe", {
         detail: { direction: (toX > 0 ? Direction.Right : Direction.Left) }
