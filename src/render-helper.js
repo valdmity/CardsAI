@@ -8,10 +8,21 @@ let progressBarsAnimTimeouts = [];
 document.addEventListener('keydown', (event) => {
     if (event.repeat) return;
     if (coolDown) return;
-    if (coolDown) return;
     if (event.code !== 'ArrowRight' && event.code !== 'ArrowLeft') return;
     const dir = (event.code !== 'ArrowLeft' ? -1 : 1);
     swipeCard(getActiveCard(), -10000 * dir, 500, -90 * dir);
+});
+
+left.addEventListener('click', (event) => {
+    if (event.repeat) return;
+    if (coolDown) return;
+    swipeCard(getActiveCard(), -10000, 500, -90);
+});
+
+right.addEventListener('click', (event) => {
+    if (event.repeat) return;
+    if (coolDown) return;
+    swipeCard(getActiveCard(), 10000, 500, 90);
 });
 
 
